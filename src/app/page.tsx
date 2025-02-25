@@ -106,16 +106,16 @@ export default function Home() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="px-6 py-8">
+    <main className="h-screen w-full bg-gray-50">
+      <div className="w-full h-full bg-white shadow-md overflow-hidden">
+        <div className="px-20 py-20">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Task Manager</h1>
-          
+  
           {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6" role="alert">
+            <div className="bg-red-50 text-red-700 p-4 mb-6" role="alert">
               <p>{error}</p>
-              <button 
-                className="text-sm underline mt-1" 
+              <button
+                className="text-sm underline mt-1"
                 onClick={() => setError(null)}
                 aria-label="Dismiss error"
               >
@@ -123,19 +123,19 @@ export default function Home() {
               </button>
             </div>
           )}
-          
+  
           <TaskForm onAddTask={handleAddTask} isLoading={isLoading} />
-          
+  
           <div className="mt-8">
             <TaskFilter activeFilter={activeFilter} onFilterChange={setActiveFilter} />
-            
+  
             <div className="mt-4 relative">
               {isLoading && (
                 <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
                   <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
                 </div>
               )}
-              
+  
               <TaskList
                 tasks={filteredTasks}
                 onToggleComplete={handleToggleComplete}
@@ -147,4 +147,4 @@ export default function Home() {
       </div>
     </main>
   );
-}
+}  
