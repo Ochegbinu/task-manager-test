@@ -7,7 +7,11 @@ interface TaskListProps {
   onDeleteTask: (id: number) => void;
 }
 
-export default function TaskList({ tasks, onToggleComplete, onDeleteTask }: TaskListProps) {
+export default function TaskList({
+  tasks,
+  onToggleComplete,
+  onDeleteTask,
+}: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
@@ -20,10 +24,16 @@ export default function TaskList({ tasks, onToggleComplete, onDeleteTask }: Task
     <table className="w-full border-collapse border border-gray-200">
       <thead>
         <tr className="bg-gray-100">
-          <th className="p-2 text-left text-sm font-medium text-gray-700">Task</th>
-          <th className="p-2 text-left text-sm font-medium text-gray-700">Status</th>
+          <th className="p-2 text-left text-sm font-medium text-gray-700">
+            Task
+          </th>
+          <th className="p-2 text-left text-sm font-medium text-gray-700">
+            Status
+          </th>
           <th className="p-2 text-left text-sm font-medium text-gray-700"></th>
-          <th className="p-2 text-left text-sm font-medium text-gray-700">Priority</th>
+          <th className="p-2 text-left text-sm font-medium text-gray-700">
+            Priority
+          </th>
           <th className="p-2"></th>
         </tr>
       </thead>
@@ -38,27 +48,23 @@ export default function TaskList({ tasks, onToggleComplete, onDeleteTask }: Task
                 onChange={() => onToggleComplete(task.id)}
                 className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 id={`task-${task.id}`}
-                aria-label={`Mark \"${task.title}\" as ${task.completed ? "incomplete" : "complete"}`}
+                aria-label={`Mark \"${task.title}\" as ${
+                  task.completed ? "incomplete" : "complete"
+                }`}
               />
             </td>
+            <td className="px-6 py-4 whitespace-nowrap"></td>
             <td className="px-6 py-4 whitespace-nowrap">
-                {/* <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  task.completed 
-                    ? "bg-green-100 text-green-800" 
-                    : "bg-yellow-100 text-yellow-800"
-                }`}>
-                  {task.completed ? "Completed" : "Pending"}
-                </span> */}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-  <span
-    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-      getPriorityColor(task.priority || "medium")
-    }`}
-  >
-    {task.priority ? capitalizeFirstLetter(task.priority) : "Medium"}
-  </span>
-</td>
+              <span
+                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
+                  task.priority || "medium"
+                )}`}
+              >
+                {task.priority
+                  ? capitalizeFirstLetter(task.priority)
+                  : "Medium"}
+              </span>
+            </td>
 
             <td className="p-2">
               <button
@@ -79,16 +85,15 @@ export default function TaskList({ tasks, onToggleComplete, onDeleteTask }: Task
 const getPriorityColor = (priority: string) => {
   switch (priority.toLowerCase()) {
     case "high":
-      return "bg-red-500 text-white"; // Red for High priority
+      return "bg-red-500 text-white";
     case "medium":
-      return "bg-yellow-500 text-white"; // Yellow for Medium priority
+      return "bg-yellow-500 text-white";
     case "low":
-      return "bg-green-500 text-white"; // Green for Low priority
+      return "bg-green-500 text-white";
     default:
-      return "bg-gray-500 text-white"; // Gray for unknown priority
+      return "bg-gray-500 text-white";
   }
 };
-
 
 function capitalizeFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
