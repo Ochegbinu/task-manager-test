@@ -106,8 +106,8 @@ export default function Home() {
   });
 
   return (
-    <main className="h-screen w-full bg-gray-50">
-      <div className="w-full h-full bg-white shadow-md overflow-hidden">
+    <main className="min-h-screen w-full bg-gray-50 overflow-auto">
+      <div className="w-full min-h-screen bg-white shadow-md overflow-hidden">
         <div className="px-20 py-20">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Task Manager</h1>
   
@@ -147,4 +147,5 @@ export default function Home() {
       </div>
     </main>
   );
+  
 }  
