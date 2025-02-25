@@ -1,101 +1,150 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import TaskForm from "@/components/TaskForm";
+import TaskList from "@/components/TaskList";
+import TaskFilter from "@/components/TaskFilter";
+import { fetchTasks, addTask, updateTask, deleteTask } from "@/lib/api";
+import { Task, FilterType } from "@/types";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchTasks();
+        
+        // Limit to first 10 tasks for better usability with JSONPlaceholder
+        const limitedTasks = data.slice(0, 10);
+        
+        const storedTasks = localStorage.getItem("tasks");
+        if (storedTasks) {
+          setTasks(JSON.parse(storedTasks));
+        } else {
+          setTasks(limitedTasks);
+          localStorage.setItem("tasks", JSON.stringify(limitedTasks));
+        }
+      } catch (err) {
+        setError("Failed to fetch tasks. Please try again later.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTasks();
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    if (tasks.length > 0) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }, [tasks]);
+
+  const handleAddTask = async (title: string) => {
+    try {
+      setIsLoading(true);
+      const newTask = await addTask({ title, completed: false });
+      
+      // JSONPlaceholder doesn't actually save our new task, so we'll create a new ID
+      newTask.id = tasks.length ? Math.max(...tasks.map(task => task.id)) + 1 : 1;
+      
+      setTasks([...tasks, newTask]);
+    } catch (err) {
+      setError("Failed to add task. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleComplete = async (id: number) => {
+    try {
+      setIsLoading(true);
+      const taskToUpdate = tasks.find((task) => task.id === id);
+      if (!taskToUpdate) return;
+      
+      const updatedTask = await updateTask(id, {
+        ...taskToUpdate,
+        completed: !taskToUpdate.completed,
+      });
+      
+      setTasks(
+        tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task))
+      );
+    } catch (err) {
+      setError("Failed to update task. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteTask = async (id: number) => {
+    try {
+      setIsLoading(true);
+      await deleteTask(id);
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (err) {
+      setError("Failed to delete task. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (activeFilter === "completed") return task.completed;
+    if (activeFilter === "pending") return !task.completed;
+    return true; // "all" filter
+  });
+
+  return (
+    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="px-6 py-8">
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Task Manager</h1>
+          
+          {error && (
+            <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6" role="alert">
+              <p>{error}</p>
+              <button 
+                className="text-sm underline mt-1" 
+                onClick={() => setError(null)}
+                aria-label="Dismiss error"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+          
+          <TaskForm onAddTask={handleAddTask} isLoading={isLoading} />
+          
+          <div className="mt-8">
+            <TaskFilter activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+            
+            <div className="mt-4 relative">
+              {isLoading && (
+                <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+                  <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                </div>
+              )}
+              
+              <TaskList
+                tasks={filteredTasks}
+                onToggleComplete={handleToggleComplete}
+                onDeleteTask={handleDeleteTask}
+              />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </main>
   );
 }
