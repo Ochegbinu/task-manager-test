@@ -34,7 +34,7 @@ export default function TaskList({ tasks, onToggleComplete, onDeleteTask }: Task
                 type="checkbox"
                 checked={task.completed}
                 onChange={() => onToggleComplete(task.id)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                 id={`task-${task.id}`}
                 aria-label={`Mark \"${task.title}\" as ${task.completed ? "incomplete" : "complete"}`}
               />
