@@ -3,6 +3,8 @@ export interface Task {
     title: string;
     completed: boolean;
     userId?: number;
+    priority?: "high" | "medium" | "low"; 
+
   }
   
   export interface NewTask {
@@ -11,4 +13,4 @@ export interface Task {
     userId?: number;
   }
   
-  export type FilterType = "all" | "pending" | "completed";
+  export type FilterType = "All Tasks" | "pending" | "completed";
