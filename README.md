@@ -1,37 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Manager
+
+A responsive and accessible task management application built with Next.js App Router, TailwindCSS, and React Hooks. This application allows users to create, update, mark as complete, and delete tasks through integration with an external API.
+
+## Features
+
+- Fetch tasks from the JSONPlaceholder API
+- Add new tasks
+- Mark tasks as completed
+- Delete tasks
+- Responsive design
+- Accessibility compliant
+- Loading states for API interactions
+
+## Technologies Used
+
+- **Next.js (App Router)** - For application framework and routing
+- **TailwindCSS** - For styling
+- **React Hooks** - For state management
+- **JSONPlaceholder API** - For task data
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (v14.0.0 or later)
+- npm (v6.0.0 or later) or yarn (v1.22.0 or later)
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ochegbinu/task-manager-test.git
+   cd task-manager-test
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## API Integration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The application interfaces with JSONPlaceholder API:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Base URL**: https://jsonplaceholder.typicode.com/todos
+- **Endpoints**:
+  - `GET /todos` - Fetch all tasks
+  - `POST /todos` - Add a new task
+  - `PUT /todos/:id` - Update a task (mark as completed)
+  - `DELETE /todos/:id` - Delete a task
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Fetching Tasks
+Tasks are automatically fetched when the application loads.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# task-manager-test
+### Adding a Task
+1. Enter the task title in the input field
+2. Click the "Add Task" button
+
+### Marking a Task as Completed
+1. Click the checkbox next to a task to toggle its completion status
+
+### Deleting a Task
+1. Click the delete (trash) icon next to a task
+
+## Bonus Features Implemented
+
+- Task filters (All, Completed, Pending)
+- Local storage persistence for tasks
+- SWR for data fetching and caching
+
+
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add some amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
